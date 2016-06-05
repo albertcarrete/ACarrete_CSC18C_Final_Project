@@ -97,6 +97,9 @@ public class Stack <T extends Comparable<T>>{
 		}
 	}  
     
+	public T peek(){
+		return items[top];
+	}
     public T[] toArray(){
 		T[] arr = (T[]) Array.newInstance(this.clazz, items.length);
 		for(int i = 0; i<items.length;i++){
