@@ -1,0 +1,7 @@
+{
+    "cmd": ["javac", "$file_name", "&&", "java", "$file_base_name"],
+    "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+    "path":"/usr/libexec/java_home",
+    "selector": "source.java",
+    "shell",true
+}
