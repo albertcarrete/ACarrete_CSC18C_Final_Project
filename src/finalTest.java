@@ -15,16 +15,18 @@ public class finalTest {
 //		System.out.println("Testing Scanner, write something: ");
 //		test = scan.nextLine();
 
-		convertToPostFix("-2 * (3+5)");
-//		convertToPostFix(" 3   *(4+5)");
-//		convertToPostFix("2*((3+5)*(3+2))");
-//		convertToPostFix("6*(3+(7*8)*(5+2))");
+		String expr = convertToPostFix("-2 * (3+5)");
+//		String expr = convertToPostFix(" 3   *(4+5)");
+//		String expr = convertToPostFix("2*((3+5)*(3+2))");
+//		String expr = convertToPostFix("6*(3+(7*8)*(5+2))");
+		evaluatePostFix(expr);
+
 
 	}
 	
 	// Takes a equation as string in infix notation and converts
 	// it to post fix notation
-	public static void convertToPostFix(String infix){
+	public static String convertToPostFix(String infix){
 		
 		//DEBUG: prints our received input
 		System.out.println(infix);
@@ -43,14 +45,14 @@ public class finalTest {
 		for (int i = 0; i < equation.length; i++){
 			if(!isOperator(equation[i])){
 //				System.out.println("Appending " + equation[i] + " to postfix string");
-				postfixString.append(equation[i]);
+				postfixString.append(equation[i] + " ");
 			}else{
 				// if ending paren
 				if(equation[i].equals(")")){
 //					System.out.println("Unwinding");
 					// unwind stack
 					while(!theStack.isEmpty() && !theStack.peek().equals("(")){
-						postfixString.append(theStack.pop());
+						postfixString.append(theStack.pop() + " ");
 					}
 				}
 				// push operator onto the stack
@@ -65,16 +67,36 @@ public class finalTest {
 		if(!theStack.isEmpty()){
 			while(!theStack.isEmpty()){
 				if(!theStack.peek().equals("(")){
-					postfixString.append(theStack.pop());	
+					postfixString.append(theStack.pop() + " ");	
 				}else{
 					theStack.pop();
 				}
 			}
 		}
 		System.out.println(postfixString);	
+		return postfixString.toString();
 	}
 	
 	public static void evaluatePostFix(String expr){
+		String[] equation = expr.split("\\s+");
+		Stack<String> theStack = new Stack<String>(String.class);
+		
+		for(int i = 0; i < equation.length; i++){
+			if(!isOperator(equation[i])){
+				theStack.push(equation[i]);
+			}
+			else{
+				int x = Integer.parseInt(theStack.pop());
+				int y = Integer.parseInt(theStack.pop());
+				
+				Integer result = operate(x,y,equation[i]);
+				theStack.push(result.toString());
+			}
+		}
+		
+		while(!theStack.isEmpty()){
+			System.out.print(theStack.pop());
+		}
 		
 	}
 	
@@ -130,9 +152,7 @@ public class finalTest {
 					b[j] = temp[i];
 					j++;
 				}
-			}else{
-				System.out.println("skip over " + temp[i]);
-				
+			}else{				
 				if(temp[i].equals("n")){
 					negativeNext = true;
 				}	
@@ -153,6 +173,32 @@ public class finalTest {
 
 	public static boolean isFlag(String o){
 		return o.equals("s") || o.equals("n");
+	}
+	public static int operate(int x,int y, String operation){
+		int result;
+		
+		switch(operation){
+		
+		case "+":
+			result = x + y;
+			break;
+		case "-":
+			result = x - y;
+			break;
+		case "*":
+			result = x*y;
+			break;
+		case "/":
+			result = x / y;
+			break;
+		case "^":
+			result = (int)Math.pow(y, x);
+			break;
+		default:
+			result = 0;
+		}
+			
+		return result;
 	}
 	
 	public static void displayArray(String[] a){
