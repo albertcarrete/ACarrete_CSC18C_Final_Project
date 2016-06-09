@@ -12,14 +12,14 @@ public class finalTest {
 //		String test;
 //		Scanner scan = new Scanner(System.in);
 //		 
-//		System.out.println("Testing Scanner, write something: ");
+//		System.out.println("Write an expression: ");
 //		test = scan.nextLine();
 
-//		String expr = convertToPostFix("(a + b) * (c – d) / ((e – f) * (g + h))");
-//		String expr = convertToPostFix(" 3   *(4+5)");
-		String expr = convertToPostFix("2*((8+5)*(1+2))");
+		String expr = convertToPostFix("3*(4+(4/2)");
+//		String expr = convertToPostFix("2*((8+5)*(1+2))");
 //		String expr = convertToPostFix("6*(3+(7*8)*(5+2))");
-//		String expr = convertToPostFix("(4+8)*(6-5)/((3-2)*(2+2))");
+//		String expr = convertToPostFix(test);
+//		String expr = convertToPostFix("(4+8)*(4-5)/((3-2)*(2+2))");
 		evaluatePostFix(expr);
 
 
@@ -47,8 +47,6 @@ public class finalTest {
 		int i = 0;
 		
 		while(parsing){
-			System.out.println("----> Pass " + (i+1));
-			System.out.println("Working: " + equation[i]);
 			if(!isOperator(equation[i])){ // is not an operator
 				postfixString.append(equation[i] + " ");
 			}else if(isOperator(equation[i],"^")){ // is operator ^
@@ -58,26 +56,22 @@ public class finalTest {
 				while(!operatorStack.isEmpty() && precendence(equation[i],operatorStack.peek())){
 					postfixString.append(operatorStack.peek() + " ");
 					operatorStack.pop();
-					System.out.println("appending");
 				}
 				operatorStack.push(equation[i]);
-				System.out.println("Operator Stack: " + operatorStack.peek());
+//				System.out.println("Operator Stack: " + operatorStack.peek());
 			}else if(isOperator(equation[i],"(")){ // is operator (
-				System.out.println("( found");
+//				System.out.println("( found");
 				operatorStack.push(equation[i]);
-				System.out.println("Operator Stack: " + operatorStack.peek());
+//				System.out.println("Operator Stack: " + operatorStack.peek());
 				
 			}else if(isOperator(equation[i],")")){ // is operator )
-				System.out.println(") found");
+//				System.out.println(") found");
 				String topOperator = operatorStack.pop();
 				while(!topOperator.equals("(")){
 					postfixString.append(topOperator + " ");
 					topOperator = operatorStack.pop();
 				}
 			}
-			
-			System.out.println("Output:" + postfixString.toString());
-			System.out.println("=====================");
 			i++;
 			if(i == equation.length){
 				parsing = false;
@@ -94,43 +88,46 @@ public class finalTest {
 				operatorStack.pop();
 			}
 		}
-		System.out.println(postfixString);	
+		System.out.println("Postfix: " + postfixString);	
 		return postfixString.toString();
 	}
 	
 	public static void evaluatePostFix(String expr){
 		
-		System.out.println("Equation");
 		String[] equation = expr.split("\\s+");
-		Stack<String> theStack = new Stack<String>(String.class);
+		Stack<String> resultStack = new Stack<String>(String.class);
 		
 		for(int i = 0; i < equation.length; i++){
 			// if not an operator
 			if(!isOperator(equation[i])){
-				theStack.push(equation[i]);
+				resultStack.push(equation[i]);
 			}
 			// if operator
 			else{
-				int x = Integer.parseInt(theStack.pop());
-				int y = Integer.parseInt(theStack.pop());
-				
-				Integer result = operate(x,y,equation[i]);
-				theStack.push(result.toString());
+				float x = Float.parseFloat(resultStack.pop());
+				float y = Float.parseFloat(resultStack.pop());
+				float result = operate(x,y,equation[i]);
+				resultStack.push(String.valueOf(result));
 			}
+			// DEBUG: Print Result Array 
+//			System.out.println("result stack: ");
+//			String[] resultArray = resultStack.toArray();
+//			for(int y = 0; y < resultArray.length; y++){
+//				System.out.println(resultArray[y] + " ");
+//			}
 		}
 		
 		// Post result
-		while(!theStack.isEmpty()){
-			System.out.println("Result:");
-			System.out.print(theStack.pop());
+		while(!resultStack.isEmpty()){
+			System.out.print("Result: ");
+			System.out.print(resultStack.pop());
 		}
 		
 	}
 	
 	/* Utilities */
 	
-	/*
-	 * Normalizes string input by replacing spaces and
+	/* Normalizes string input by replacing spaces and
 	 * identifying and grouping negatives. 
 	 */
 	public static String[] normalize(String a[]){
@@ -186,16 +183,11 @@ public class finalTest {
 				}	
 			}
 		}
-	
-		System.out.print("Cleaned: ");
-		displayArray(b);
-		
 		return b;
 	}
 	
 	// Is first param op less than or equal to second param op?
 	public static boolean precendence(String x, String y){
-		System.out.println("precendence check");
 		String[] ops = new String[2];
 		ops[0] = x;
 		ops[1] = y;
@@ -224,7 +216,6 @@ public class finalTest {
 					break;
 			}
 		}
-		System.out.println("Comparing " + x + ":" + opVals[0] + " <= " + y + ":" + opVals[1]);
 		return opVals[0] <= opVals[1];
 
 		
@@ -248,8 +239,8 @@ public class finalTest {
 	public static boolean isFlag(String o){
 		return o.equals("s") || o.equals("n");
 	}
-	public static int operate(int x,int y, String operation){
-		int result;
+	public static float operate(float x,float y, String operation){
+		float result;
 		
 		switch(operation){
 		
@@ -260,18 +251,17 @@ public class finalTest {
 			result = x - y;
 			break;
 		case "*":
-			result = x*y;
+			result = x * y;
 			break;
 		case "/":
-			result = x / y;
+			result = y / x;
 			break;
 		case "^":
-			result = (int)Math.pow(y, x);
+			result = (float)Math.pow(y, x);
 			break;
 		default:
 			result = 0;
 		}
-			
 		return result;
 	}
 	
