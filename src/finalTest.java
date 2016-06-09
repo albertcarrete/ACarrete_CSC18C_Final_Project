@@ -9,17 +9,23 @@ public class finalTest {
 
 	public static void main(String[] args) {
 
+		// Custom Input
 //		String test;
 //		Scanner scan = new Scanner(System.in);
 //		 
 //		System.out.println("Write an expression: ");
 //		test = scan.nextLine();
-
-		String expr = convertToPostFix("3*(4+(4/2)");
-//		String expr = convertToPostFix("2*((8+5)*(1+2))");
-//		String expr = convertToPostFix("6*(3+(7*8)*(5+2))");
 //		String expr = convertToPostFix(test);
+
+		// Official Tests
+		String expr = convertToPostFix("3 * (4 + 5)");
+//		String expr = convertToPostFix("2 * ((3+5)*(3+2))");
+//		String expr = convertToPostFix("6 * (3+(7*8)*(5+2))");
+//		String expr = convertToPostFix("-2 * (3+5)");
+		
+		// Unofficial Tests
 //		String expr = convertToPostFix("(4+8)*(4-5)/((3-2)*(2+2))");
+		
 		evaluatePostFix(expr);
 
 
@@ -66,10 +72,10 @@ public class finalTest {
 				
 			}else if(isOperator(equation[i],")")){ // is operator )
 //				System.out.println(") found");
-				String topOperator = operatorStack.pop();
-				while(!topOperator.equals("(")){
-					postfixString.append(topOperator + " ");
-					topOperator = operatorStack.pop();
+				String top = operatorStack.pop();
+				while(!top.equals("(")){
+					postfixString.append(top + " ");
+					top = operatorStack.pop();
 				}
 			}
 			i++;
